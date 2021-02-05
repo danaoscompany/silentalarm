@@ -237,12 +237,13 @@ class User extends CI_Controller
         for ($i = 0;$i < sizeof($users);$i++)
         {
             $user = $users[$i];
-            $fcmToken = $this
+            $userData = $this
                 ->db
                 ->get_where('users', array(
                 'id' => intval($user['soldier_id'])
-            ))->row_array()['fcm_id'];
-            $receiveAlerts = intval($user['receive_alerts']);
+            ))->row_array();
+            $fcmToken = $userData['fcm_id'];
+            $receiveAlerts = intval($userData['receive_alerts']);
             if ($receiveAlerts != 2)
             {
                 FCM::send_message_without_notification($fcmToken, 5, array(
