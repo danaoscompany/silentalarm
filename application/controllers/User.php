@@ -1008,5 +1008,9 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
             ));
         }
     }
+    
+    public function get_random_ad() {
+    	echo json_encode($this->db->query("SELECT * FROM `ads` ORDER BY RAND() LIMIT 1")->row_array());
+    }
 }
 
