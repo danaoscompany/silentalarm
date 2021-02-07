@@ -1012,5 +1012,33 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
     public function get_random_ad() {
     	echo json_encode($this->db->query("SELECT * FROM `ads` ORDER BY RAND() LIMIT 1")->row_array());
     }
+    
+    public function refresh_alarm() {
+		$url = "https://fcm.googleapis.com/fcm/send";
+	    $serverKey = 'AAAAvB1532o:APA91bG6nIch54bG8iwHxWGu0QmNru3piqFqu5n3M_pKXofcuXW2NhMos4a9p8JtO_5WisBJLIYvE5007HoKrs0u-UctvoLkYAppchSUefuVENEl5Vnx6mx70ZQVTJ1MiWWG3EHmH73l';
+	    $arrayToSend = array('to' => '/topics/refresh_alarm', 'priority'=>'high', 'data' => array(
+	    	'notification_type' => 6,
+	    	'show_notification' => 0,
+	    	'receive_alerts' => 1
+	    ));
+	    $json = json_encode($arrayToSend);
+	    $headers = array();
+	    $headers[] = 'Content-Type: application/json';
+	    $headers[] = 'Authorization: key='. $serverKey;
+	    $ch = curl_init();
+	    curl_setopt($ch, CURLOPT_URL, $url);
+	    curl_setopt($ch, CURLOPT_CUSTOMREQUEST,"POST");
+	    curl_setopt($ch, CURLOPT_RETURNTRANSFER,TRUE);
+	    curl_setopt($ch, CURLOPT_POSTFIELDS, $json);
+	    curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+	    //Send the request
+	    $response = curl_exec($ch);
+	    //echo $response;
+	    //Close request
+	    if ($response === FALSE) {
+	    	die('FCM Send Error: ' . curl_error($ch));
+	    }
+	    curl_close($ch);
+	}
 }
 
