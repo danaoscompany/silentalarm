@@ -237,4 +237,30 @@ class Admin extends CI_Controller {
 	public function get_all_admins() {
 		echo json_encode($this->db->query("SELECT * FROM `admins` ORDER BY `name` ASC")->result_array());
 	}
+	
+	public function get_all_ads() {
+		echo json_encode($this->db->query("SELECT * FROM `ads`")->result_array());
+	}
+	
+	public function delete_ad() {
+		$id = intval($this->input->post('id'));
+		echo json_encode($this->db->query("DELETE FROM `ads` WHERE `id`=" . $id));
+	}
+	
+	public function add_ad() {
+		$link = $this->input->post('link');
+		$config['upload_path']          = './userdata/';
+	        $config['allowed_types']        = '*';
+	        $config['max_size']             = 2147483647;
+	        $config['file_name']            = Util::generateUUIDv4();
+	        $this->load->library('upload', $config);
+	        if ($this->upload->do_upload('file')) {
+				$this->db->insert('ads', array(
+					'img' => $this->upload->data()['file_name'],
+					'link' => $link
+				));
+	        } else {
+	        	echo json_encode($this->upload->display_errors());
+	        }
+	}
 }
