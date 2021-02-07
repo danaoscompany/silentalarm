@@ -1040,5 +1040,14 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 	    }
 	    curl_close($ch);
 	}
+	
+	public function get_documents() {
+		echo json_encode($this->db->query("SELECT * FROM `other_instances`")->result_array());
+	}
+	
+	public function get_documents_by_type() {
+		$type = $this->input->post('type');
+		echo json_encode($this->db->query("SELECT * FROM `other_instances` WHERE `type`='" . $type . "'")->result_array());
+	}
 }
 
