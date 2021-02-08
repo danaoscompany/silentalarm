@@ -263,4 +263,82 @@ class Admin extends CI_Controller {
 	        	echo json_encode($this->upload->display_errors());
 	        }
 	}
+	
+	public function delete_document() {
+		$id = intval($this->input->post('id'));
+		$this->db->query("DELETE FROM `other_instances` WHERE `id`=" . $id);
+	}
+	
+	public function add_document() {
+		$type = $this->input->post('type');
+		$title = $this->input->post('title');
+		$config['upload_path']          = './userdata/';
+	        $config['allowed_types']        = '*';
+	        $config['max_size']             = 2147483647;
+	        $config['file_name']            = Util::generateUUIDv4();
+	        $this->load->library('upload', $config);
+	        if ($this->upload->do_upload('file')) {
+				$this->db->insert('other_instances', array(
+					'type' => $type,
+					'title' => $title,
+					'path' => $this->upload->data()['file_name']
+				));
+	        } else {
+	        	echo json_encode($this->upload->display_errors());
+	        }
+	}
+	
+	public function add_prayer_time() {
+		$religion = $this->input->post('religion');
+		$day = $this->input->post('day');
+		$hour = $this->input->post('hour');
+		$name = $this->input->post('name');
+		$tone = intval($this->input->post('tone'));
+		$this->db->query("INSERT INTO `prayer_times` (`religion`, `day`, `hour`, `name`, `tone`) VALUES ('" . $religion . "', " . $day . ", '" . $hour . "', '" . $name . "', " . $tone . ")");
+	}
+	
+	public function update_prayer_time() {
+		$id = $this->input->post('id');
+		$religion = $this->input->post('religion');
+		$day = $this->input->post('day');
+		$hour = $this->input->post('hour');
+		$name = $this->input->post('name');
+		$tone = intval($this->input->post('tone'));
+		$this->db->query("UPDATE `prayer_times` SET `name`='" . $name . "', `hour`='" . $hour . "', `tone`=" . $tone . " WHERE `id`=" . $id);
+	}
+	
+	public function delete_prayer_time() {
+		$id = $this->input->post('id');
+		$this->db->query("DELETE FROM `prayer_times` WHERE `id`=" . $id);
+	}
+	
+	public function set_prayer_time_automatic() {
+		$religion = $this->input->post('religion');
+		$day = intval($this->input->post('day'));
+		$automatic = intval($this->input->post('automatic'));
+		$this->db->query("UPDATE `prayer_times` SET `automatic`=" . $automatic . " WHERE `religion`='" . $religion . "' AND `day`=" . $day);
+	}
+	
+	public function get_holidays() {
+		$religion = $this->input->post('religion');
+		echo json_encode($this->db->query("SELECT * FROM `holiday_times` WHERE `religion`='" . $religion . "'")->result_array());
+	}
+	
+	public function add_holiday() {
+		$religion = $this->input->post('religion');
+		$name = $this->input->post('name');
+		$day = $this->input->post('day');
+		$month = $this->input->post('month');
+		$this->db->insert('holiday_times', array(
+			'religion' => $religion,
+			'name' => $name,
+			'day' => $day,
+			'month' => $month
+		));
+	}
+	
+	public function delete_holiday() {
+		$id = $this->input->post('id');
+		$this->db->query("DELETE FROM `holiday_times` WHERE `id`=" . $id);
+	}
 }

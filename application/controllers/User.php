@@ -1049,5 +1049,12 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 		$type = $this->input->post('type');
 		echo json_encode($this->db->query("SELECT * FROM `other_instances` WHERE `type`='" . $type . "'")->result_array());
 	}
+	
+	public function get_prayer_times() {
+		$religion = $this->input->post('religion');
+		$day = $this->input->post('day');
+		echo json_encode($this->db->query("SELECT * FROM `prayer_times` WHERE `religion`='" . $religion . "' AND `day`=" . $day)
+			->result_array());
+	}
 }
 
