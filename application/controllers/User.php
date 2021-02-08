@@ -912,6 +912,9 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
         $gender = intval($this
             ->input
             ->post('gender'));
+        $religion = $this
+            ->input
+            ->post('religion');
         $allowComments = intval($this
             ->input
             ->post('allow_comments'));
@@ -947,6 +950,7 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
                     'description' => $description,
                     'birth_year' => $birthYear,
                     'gender' => $gender,
+                    'religion' => $religion,
                     'photo' => $this
                         ->upload
                         ->data('file_name') ,
@@ -984,6 +988,7 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
                 'description' => $description,
                 'birth_year' => $birthYear,
                 'gender' => $gender,
+                'religion' => $religion,
                 'allow_comments' => $allowComments,
                 'allow_private_chats' => $allowPrivateChats,
                 'receive_alerts' => $receiveAlerts,
@@ -1072,5 +1077,10 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 		$religion = $user['religion'];
 		echo json_encode($this->db->query("SELECT * FROM `holiday_times` WHERE `religion`='" . $religion . "'")
 			->result_array());
+	}
+	
+	public function get_user_by_id() {
+		$userID = intval($this->input->post('id'));
+		echo json_encode($this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array());
 	}
 }
