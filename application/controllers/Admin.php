@@ -327,11 +327,13 @@ class Admin extends CI_Controller {
 	public function add_holiday() {
 		$religion = $this->input->post('religion');
 		$name = $this->input->post('name');
+		$description = $this->input->post('description');
 		$day = $this->input->post('day');
 		$month = $this->input->post('month');
 		$this->db->insert('holiday_times', array(
 			'religion' => $religion,
 			'name' => $name,
+			'description' => $description,
 			'day' => $day,
 			'month' => $month
 		));

@@ -1056,5 +1056,21 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 		echo json_encode($this->db->query("SELECT * FROM `prayer_times` WHERE `religion`='" . $religion . "' AND `day`=" . $day)
 			->result_array());
 	}
+	
+	public function get_prayer_times_by_user_id() {
+		$userID = intval($this->input->post('user_id'));
+		$day = intval($this->input->post('day'));
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		$religion = $user['religion'];
+		echo json_encode($this->db->query("SELECT * FROM `prayer_times` WHERE `religion`='" . $religion . "' AND `day`=" . $day)
+			->result_array());
+	}
+	
+	public function get_holidays_by_user_id() {
+		$userID = intval($this->input->post('user_id'));
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		$religion = $user['religion'];
+		echo json_encode($this->db->query("SELECT * FROM `holiday_times` WHERE `religion`='" . $religion . "'")
+			->result_array());
+	}
 }
-
