@@ -252,7 +252,7 @@ class User extends CI_Controller
                     'receive_alerts' => $receiveAlerts,
                     'commander_id' => $commanderID,
                     'color' => $color,
-                    'img_url' => base_url() . "userdata/" . $imgFileName
+                    'img_url' => "http://silentalarm.xyz/silentalarm/userdata/" . $imgFileName
                 ));
             }
         }
@@ -261,7 +261,7 @@ class User extends CI_Controller
                     'alarm_on' => $on,
                     'alarm_type' => $alarmType,
                     'receive_alerts' => 1,
-                    'img_url' => base_url() . "userdata/" . $imgFileName,
+                    'img_url' => "http://silentalarm.xyz/silentalarm/userdata/" . $imgFileName,
                     'color' => $this->input->post('color')
                 ));*/
     }
