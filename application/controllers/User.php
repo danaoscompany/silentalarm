@@ -137,6 +137,9 @@ class User extends CI_Controller
         $alarmType = intval($this
             ->input
             ->post('alarm_type'));
+        $pangkalan = intval($this
+            ->input
+            ->post('pangkalan'));
         $on = intval($this
             ->input
             ->post('on'));
@@ -165,7 +168,26 @@ class User extends CI_Controller
             $clickAction = "alerton";
             $showNotification = 1;
         }
-        for ($i = 0;$i < sizeof($users);$i++)
+        $topic = "/topics/all_pangkalan";
+        if ($pangkalan == 1) {
+        	$topic = "/topics/pangkalan_1";
+        } else if ($pangkalan == 2) {
+        	$topic = "/topics/pangkalan_2";
+        } else if ($pangkalan == 3) {
+        	$topic = "/topics/pangkalan_3";
+        } else if ($pangkalan == 4) {
+        	$topic = "/topics/pangkalan_4";
+        }
+        FCM::send_message($topic, 1, $showNotification, 'Pesan baru', "Sedang ada pelaksanaan alarm dari komandan " . $commanderName,
+                	array(
+                	    'alarm_on' => $on,
+                	    'alarm_type' => $alarmType,
+                	    'commander_id' => $commanderID,
+                	    'color' => $color,
+	                    'pangkalan' => "" . $pangkalan
+                	)
+                );
+        /*for ($i = 0;$i < sizeof($users);$i++)
         {
             $user = $users[$i];
             $fcmToken = $this
@@ -186,7 +208,8 @@ class User extends CI_Controller
                 	)
                 );
             }
-        }
+        }*/
+        echo $topic;
     }
 
     public function set_alarm_with_image()
@@ -206,6 +229,9 @@ class User extends CI_Controller
         $alarmType = intval($this
             ->input
             ->post('alarm_type'));
+        $pangkalan = intval($this
+            ->input
+            ->post('pangkalan'));
         $on = intval($this
             ->input
             ->post('on'));
@@ -234,7 +260,25 @@ class User extends CI_Controller
             $clickAction = "alerton";
             $showNotification = 1;
         }
-        for ($i = 0;$i < sizeof($users);$i++)
+        $topic = "/topics/all_pangkalan";
+        if ($pangkalan == 1) {
+        	$topic = "/topics/pangkalan_1";
+        } else if ($pangkalan == 2) {
+        	$topic = "/topics/pangkalan_2";
+        } else if ($pangkalan == 3) {
+        	$topic = "/topics/pangkalan_3";
+        } else if ($pangkalan == 4) {
+        	$topic = "/topics/pangkalan_4";
+        }
+        FCM::send_message_without_notification($topic, 5, array(
+                    'alarm_on' => $on,
+                    'alarm_type' => $alarmType,
+                    'commander_id' => $commanderID,
+                    'color' => $color,
+                    'img_name' => $imgFileName,
+                    'pangkalan' => "" . $pangkalan
+                ));
+        /*for ($i = 0;$i < sizeof($users);$i++)
         {
             $user = $users[$i];
             $userData = $this
@@ -255,7 +299,7 @@ class User extends CI_Controller
                     'img_name' => $imgFileName
                 ));
             }
-        }
+        }*/
         /*$fcmToken = $this->db->query("SELECT * FROM `users` WHERE `email`='danaoscompany@gmail.com'")->row_array()['fcm_id'];
         FCM::send_message_without_notification($fcmToken, 5, array(
                     'alarm_on' => $on,
@@ -264,6 +308,7 @@ class User extends CI_Controller
                     'img_name' => $imgFileName,
                     'color' => $this->input->post('color')
                 ));*/
+        echo $topic;
     }
 
     public function get_private_messages()
@@ -915,6 +960,9 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
         $religion = $this
             ->input
             ->post('religion');
+        $pangkalan = intval($this
+            ->input
+            ->post('pangkalan'));
         $allowComments = intval($this
             ->input
             ->post('allow_comments'));
@@ -951,6 +999,7 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
                     'birth_year' => $birthYear,
                     'gender' => $gender,
                     'religion' => $religion,
+                    'pangkalan' => $pangkalan,
                     'photo' => $this
                         ->upload
                         ->data('file_name') ,
@@ -965,16 +1014,18 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
             $userID = intval($this
                 ->db
                 ->get('users')->row_array()['id']);
-            $role = intval($this
+            $user = $this
                 ->db
                 ->get_where('users', array(
                 'id' => $userID
-            ))->row_array() ['role']);
+            ))->row_array();
+            $role = intval( $user['role']);
             echo json_encode(array(
                 'response_code' => 1,
                 'data' => array(
                     'user_id' => $userID,
-                    'role' => $role
+                    'role' => $role,
+                    'pangkalan' => intval($user['pangkalan'])
                 )
             ));
         }
@@ -989,6 +1040,7 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
                 'birth_year' => $birthYear,
                 'gender' => $gender,
                 'religion' => $religion,
+                'pangkalan' => $pangkalan,
                 'allow_comments' => $allowComments,
                 'allow_private_chats' => $allowPrivateChats,
                 'receive_alerts' => $receiveAlerts,
@@ -999,16 +1051,18 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
             $userID = intval($this
                 ->db
                 ->get('users')->row_array()['id']);
-            $role = intval($this
+            $user = $this
                 ->db
                 ->get_where('users', array(
                 'id' => $userID
-            ))->row_array() ['role']);
+            ))->row_array();
+            $role = intval( $user['role']);
             echo json_encode(array(
                 'response_code' => 1,
                 'data' => array(
                     'user_id' => $userID,
-                    'role' => $role
+                    'role' => $role,
+                    'pangkalan' => intval($user['pangkalan'])
                 )
             ));
         }

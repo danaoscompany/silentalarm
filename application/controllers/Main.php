@@ -16,7 +16,8 @@ class Main extends CI_Controller {
   		echo json_encode(array(
   			'response_code' => 1,
   			'user_id' => intval($user['id']),
-  			'role' => intval($user['role'])
+  			'role' => intval($user['role']),
+  			'pangkalan' => intval($user['pangkalan'])
   		));
   	} else {
   		echo json_encode(array(
