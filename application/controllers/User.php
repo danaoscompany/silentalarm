@@ -161,6 +161,11 @@ class User extends CI_Controller
         {
             $title = "Alarm mati";
             $clickAction = "alertoff";
+            if (isset($_POST['img_name'])) {
+            	if (file_exists($this->input->post('img_name'))) {
+	            	unlink("userdata/" . $this->input->post('img_name'));
+            	}
+            }
         }
         else if ($on == 1)
         {
@@ -217,7 +222,7 @@ class User extends CI_Controller
     	$config['upload_path']          = './userdata/';
         $config['allowed_types']        = '*';
         $config['max_size']             = 2147483647;
-        $config['file_name']            = Util::generateUUIDv4();
+        //$config['file_name']            = Util::generateUUIDv4();
         $this->load->library('upload', $config);
         if (!$this->upload->do_upload('file')) {
         	return;
@@ -1136,5 +1141,31 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 	public function get_user_by_id() {
 		$userID = intval($this->input->post('id'));
 		echo json_encode($this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array());
+	}
+	
+	public function send_complaint() {
+		$userID = intval($this->input->post('user_id'));
+		$report = $this->input->post('report');
+		$this->db->insert('reports', array(
+			'user_id' => $userID,
+			'report' => $report
+		));
+		$user = $this->db->query("SELECT * FROM `users` WHERE `id`=" . $userID)->row_array();
+		$pangkalan = intval($user['pangkalan']);
+		$commanders = $this->db->query("SELECT * FROM `users` WHERE `pangkalan`=" . $pangkalan . " AND `role`=0")->result_array();
+		for ($i=0; $i<sizeof($commanders); $i++) {
+			$fcmID = $commanders[$i]['fcm_id'];
+			FCM::send_message($fcmID, 7, 1, 'Pengaduan baru', "Baru saja ada pengaduan baru dari komandan " . $commanders[$i]['name'],
+               	array(
+                	'commander_id' => $commanders[$i]['id'],
+	                'pangkalan' => "" . $pangkalan
+                )
+            );
+		}
+	}
+	
+	public function get_complaints() {
+		$userID = intval($this->input->post('user_id'));
+		echo json_encode($this->db->query("SELECT * FROM `reports` WHERE `user_id`=" . $userID)->result_array());
 	}
 }

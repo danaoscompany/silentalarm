@@ -14,4 +14,10 @@ class Test extends CI_Controller {
 	public function a() {
 		echo base_url();
 	}
+	
+	public function unlink() {
+		if (file_exists("userdata/img.jpg")) {
+			unlink("userdata/img.jpg");
+		}
+	}
 }
