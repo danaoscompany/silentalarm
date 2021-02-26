@@ -1168,4 +1168,31 @@ FROM videos HAVING distance < 25 ORDER BY distance;')->result_array();
 		$userID = intval($this->input->post('user_id'));
 		echo json_encode($this->db->query("SELECT * FROM `reports` WHERE `user_id`=" . $userID)->result_array());
 	}
+	
+	public function get_nominatif_batalyon_document() {
+		$type = $this->input->post('type');
+		echo json_encode($this->db->query("SELECT * FROM `nominatif_batalyon` WHERE `type`='" . $type . "' LIMIT 1")->row_array());
+	}
+	
+	public function upload_nominatif_batalyon_document() {
+		$type = $this->input->post('type');
+		$config['upload_path']          = './userdata/';
+        $config['allowed_types']        = '*';
+        $config['max_size']             = 2147483647;
+        $config['file_name']            = Util::generateUUIDv4();
+        $this->load->library('upload', $config);
+        if ($this->upload->do_upload('file')) {
+        	$documentCount = $this->db->query("SELECT * FROM `nominatif_batalyon` WHERE `type`='" . $type . "' LIMIT 1")->num_rows();
+        	if ($documentCount > 0) {
+        		$this->db->query("UPDATE `nominatif_batalyon` SET `path`='" . $this->upload->data()['file_name'] . "' WHERE `type`='" . $type . "'");
+        	} else {
+        		$this->db->insert('nominatif_batalyon', array(
+        			'path' => $this->upload->data()['file_name'],
+        			'type' => $type
+        		));
+        	}
+        } else {
+        	echo json_encode($this->upload->display_errors());
+        }
+	}
 }
