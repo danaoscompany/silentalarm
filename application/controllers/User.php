@@ -280,7 +280,7 @@ class User extends CI_Controller
                     'alarm_type' => $alarmType,
                     'commander_id' => $commanderID,
                     'color' => $color,
-                    'img_name' => $imgFileName,
+                    'img' => $imgFileName,
                     'pangkalan' => "" . $pangkalan
                 ));
         /*for ($i = 0;$i < sizeof($users);$i++)
