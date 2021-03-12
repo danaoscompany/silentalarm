@@ -48,6 +48,7 @@ class Admin extends CI_Controller {
 	
 	public function add_user() {
 		$email = $this->input->post('email');
+		$role = intval($this->input->post('role'));
 		if ($this->db->query("SELECT * FROM `users` WHERE `email`='" . $email . "'")->num_rows() > 0) {
 			echo json_encode(array(
 				'response_code' => -1
@@ -55,7 +56,8 @@ class Admin extends CI_Controller {
 			return;
 		}
 		$this->db->insert('users', array(
-			'email' => $email
+			'email' => $email,
+			'role' => $role
 		));
 		echo json_encode(array(
 			'response_code' => 1
